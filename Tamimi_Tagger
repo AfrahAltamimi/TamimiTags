@@ -1,0 +1,74 @@
+#كود تجهيز مدونة الدراسة للتقطيع
+from lazyme import per_section
+import nltk 
+training_sentences = [[tuple(token.split('\t')) for token in sent] for sent in per_section(open('C:\\Test\\Seg\\TRAIN1.txt'))]
+test_sentences = [[tuple(token.split('\t')) for token in sent] for sent in per_section(open('C:\\Test\\Seg\\TEST1.txt'))]
+
+#كود تجهيز مدونة الدراسة للتوسيم
+from lazyme import per_section
+import nltk 
+training_sentences = [[tuple(token.split('\t')) for token in sent] for sent in per_section(open('C:\\Test\\Training\\L1\\Train_L1.txt'))]
+test_sentences = [[tuple(token.split('\t')) for token in sent] for sent in per_section(open('C:\\Test\\Testing\\L1\\Test_L1.txt'))]
+print(len(training_sentences))
+print(len(test_sentences))
+
+# كود خصائص الحالة للتقطيع
+def features(sentence, index):
+    	""" sentence: [w1, w2, ...], index: the index of the word """
+    return {
+'word': sentence[index],
+'prev_word1': '<s>' if index == 0 else sentence[index - 1],
+'prev_word2': '<s>' if index == 0 else '<s>' if index == 1 else sentence[index - 2],
+'next_word1': '/<s>' if index == len(sentence) - 1 else sentence[index + 1],
+'next_word2': '/<s>' if index == len(sentence) - 1 else '/<s>' if index == len(sentence) - 2 else sentence[index + 2],
+      'is_numeric': sentence[index].isdigit(),
+      
+# كود خصائص الحالة للتوسيم
+def features(sentence, index):
+    """ sentence: [w1, w2, ...], index: the index of the word """
+    return {
+        'word': sentence[index],
+        'is_first': index == 0,
+        'is_last': index == len(sentence) - 1,
+        'prefix-1': sentence[index][0],
+        'prefix-2': sentence[index][:2],
+        'prefix-3': sentence[index][:3],
+        'prefix-4': sentence[index][:4],
+        'suffix-1': sentence[index][-1],
+        'suffix-2': sentence[index][-2:],
+        'suffix-3': sentence[index][-3:],
+         prev_word1': '' if index == 0 else sentence[index - 1],  
+        'next_word1': '' if index == len(sentence) - 1 else sentence[index + 1],
+        'is_numeric': sentence[index].isdigit(),
+        
+# كود نقل بيانات التدريب والاختبار لمجموعة بيانات dataset
+from nltk.tag.util import untag
+def transform_to_dataset(tagged_sentences):
+    X, y = [], []
+     for tagged in tagged_sentences:
+        X.append([features(untag(tagged), index) for index in range(len(tagged))])
+        y.append([tag for _, tag in tagged])
+    return X, y 
+X_train, y_train = transform_to_dataset(training_sentences)
+X_test, y_test = transform_to_dataset(test_sentences) print(len(X_train))     
+print(len(X_test))         
+
+# كود تدريب نموذج CRFللتقطيع والتوسيم
+from sklearn_crfsuite import CRF
+import sklearn_crfsuite
+from sklearn_crfsuite import scorers
+from sklearn_crfsuite import metrics
+crf = sklearn_crfsuite.CRF(algorithm='lbfgs',
+    c1=0.01,
+    c2=0.01,
+    max_iterations=100000,
+    all_possible_transitions=True)
+crf.fit(X_train, y_train)
+
+#كود اختبار نموذج CRFللتقطيع والتوسيم
+from sklearn_crfsuite import metrics
+y_pred = crf.predict(X_test)
+print("Accuracy = ",metrics.flat_accuracy_score(y_test, y_pred))
+print ("Recall =", metrics.flat_recall_score(y_test, y_pred, average='weighted',  labels=labels))
+print ("Precision =", metrics.flat_precision_score(y_test, y_pred, average='weighted',  labels=labels))
+print ("F1 =", metrics.flat_f1_score(y_test, y_pred, average='weighted',  labels=labels))
