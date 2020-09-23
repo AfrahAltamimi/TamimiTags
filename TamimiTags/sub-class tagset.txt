@@ -1,0 +1,31 @@
+RP	article
+NA	concrete noun
+NC	abstract noun
+PUNC	punctuation
+VP	present verb
+VS	past verb
+NI	undefined noun
+AS	active participle
+Tags	Label
+AA	participial adjective
+AO	passive participle
+PR	relative pronouns
+PD	demonstrative pronoun
+NV	collective noun
+NL	place name
+AC	comparative adjective
+DIGIT	digit word
+PP	personal pronouns
+AE	intensive adjective
+ABBREV	abbreviation
+FOREIGN	foreign words
+VC	command verb
+DT	time adverb
+NM	instrumental noun
+DL	place adverb
+SYMB	symbols words
+NT	time name
+IV	verbal interjection
+IG	niʿma interjection
+IS	imitative word
+IX	beᵓsa interjection

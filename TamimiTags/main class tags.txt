@@ -1,0 +1,13 @@
+Tags	Label
+N	noun
+RP	article
+V	verb
+A	adjective
+PUNC	punctuation
+P	pronouns
+DIGIT	digit word
+D	adverb
+ABBREV	abbreviation
+FOREIGN	foreign words
+SYMB	symbols words
+I	interjection
